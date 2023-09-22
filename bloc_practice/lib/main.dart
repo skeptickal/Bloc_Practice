@@ -1,10 +1,15 @@
+import 'package:bloc_practice/cubit/counter_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    home: BlocPractice(),
+  runApp(BlocProvider<CounterCubit>(
+    create: (context) => CounterCubit(),
+    child: MaterialApp(
+      home: BlocPractice(),
+    ),
   ));
 }
 
@@ -32,25 +37,22 @@ class _BlocPracticeState extends State<BlocPractice> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-          FloatingActionButton(onPressed: () {
-          setState(() {
-            counter--;
-            print(counter);
-          });
-        },
-        backgroundColor: Colors.blueGrey,
-        child: Icon(Icons.remove),),  
-        FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            counter++;
-            print(counter);
-          });
-        },
-        backgroundColor: Colors.blueGrey,
-        child: Icon(Icons.add),
-      ),],
-      ),
+            FloatingActionButton(
+              onPressed: () {
+                BlocProvider.of<CounterCubit>(context).decrement();
+              },
+              backgroundColor: Colors.blueGrey,
+              child: Icon(Icons.remove),
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                BlocProvider.of<CounterCubit>(context).increment();
+              },
+              backgroundColor: Colors.blueGrey,
+              child: Icon(Icons.add),
+            ),
+          ],
+        ),
       ],
       body: Container(
         decoration: const BoxDecoration(
@@ -61,10 +63,7 @@ class _BlocPracticeState extends State<BlocPractice> {
         child: Center(
           child: GestureDetector(
             onTap: () {
-              setState(() {
-                counter = 0;
-                print(counter);
-              });
+              BlocProvider.of<CounterCubit>(context).increment();
             },
             child: Container(
               height: 100,
@@ -78,7 +77,15 @@ class _BlocPracticeState extends State<BlocPractice> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(counter.toString(), style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 16),),
+                  BlocBuilder<CounterCubit, CounterState>(
+                    builder: (context, state) {
+                      return Text(
+                        state.counterValue.toString(),
+                        style: GoogleFonts.montserrat(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      );
+                    },
+                  ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(6, 6, 6, 0),
                     child: Text(
