@@ -60,42 +60,57 @@ class _BlocPracticeState extends State<BlocPractice> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [Colors.blueGrey, Colors.white])),
-        child: Center(
-          child: GestureDetector(
-            onTap: () {
-              BlocProvider.of<CounterCubit>(context).increment();
-            },
-            child: Container(
-              height: 100,
-              width: 100,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color.fromARGB(255, 255, 255, 255),
-                border: Border.all(
-                    width: 2.0, color: Color.fromARGB(255, 56, 73, 82)),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  BlocBuilder<CounterCubit, CounterState>(
-                    builder: (context, state) {
-                      return Text(
-                        state.counterValue.toString(),
+        child: BlocListener<CounterCubit, CounterState>(
+          listener: (context, state) {
+            if (state.wasIncremented == true) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('Icremented'),
+                duration: Duration(milliseconds: 300),
+              ));
+            } else if (state.wasIncremented == false) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('Decremented'),
+                duration: Duration(milliseconds: 300),
+              ));
+            }
+          },
+          child: Center(
+            child: GestureDetector(
+              onTap: () {
+                BlocProvider.of<CounterCubit>(context).increment();
+              },
+              child: Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  border: Border.all(
+                      width: 2.0, color: Color.fromARGB(255, 56, 73, 82)),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    BlocBuilder<CounterCubit, CounterState>(
+                      builder: (context, state) {
+                        return Text(
+                          state.counterValue.toString(),
+                          style: GoogleFonts.montserrat(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        );
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(6, 6, 6, 0),
+                      child: Text(
+                        'reset',
                         style: GoogleFonts.montserrat(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      );
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(6, 6, 6, 0),
-                    child: Text(
-                      'reset',
-                      style: GoogleFonts.montserrat(
-                        fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
